@@ -257,7 +257,6 @@ export default function ANPRDemo() {
                           <TableCell className="font-medium">Color</TableCell>
                           <TableCell>
                             <div className="flex items-center">
-                              <div className="h-4 w-4 rounded-full bg-gray-300 mr-2"></div>
                               {results.car.color}
                             </div>
                           </TableCell>
