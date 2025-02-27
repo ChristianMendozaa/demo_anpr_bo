@@ -66,8 +66,8 @@ export default function ANPRDemo() {
       reader.readAsDataURL(droppedFile)
     }
   }
+  const url = "https://server-anpr-bo.vercel.app/auto"
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -80,59 +80,30 @@ export default function ANPRDemo() {
     setError(null)
 
     try {
-      // This is where you would connect to your backend
-      // For now, we'll simulate a response after a delay
-      setTimeout(() => {
-        // Mock response data based on the provided JSON structure
-        const mockResponse = {
-          car: {
-            make: "Toyota",
-            model: "Corolla",
-            color: "Plateado",
-          },
-          license_plate: {
-            number: "ABC123",
-            country: "México",
-            region: "Ciudad de México",
-          },
-          environment: {
-            location_type: "Calle",
-            weather: "Soleado",
-            time_of_day: "Día",
-          },
-          additional_info: {
-            occupants_visible: "Sí",
-            damage: "No visible",
-          },
-        }
+      const formData = new FormData()
+      formData.append('file', file, file.name)
 
-        setResults(mockResponse)
-        setIsLoading(false)
-      }, 2000)
-
-      // When connecting to a real backend, you would use code like this:
-      /*
-      const formData = new FormData();
-      formData.append('image', file);
-      
-      const response = await fetch('/api/analyze', {
+      const response = await fetch(url, {
         method: 'POST',
         body: formData,
-      });
-      
+      })
+
       if (!response.ok) {
-        throw new Error('Failed to analyze image');
+        const errorText = await response.text()
+        console.error("Error en la respuesta del servidor:", errorText)
+        throw new Error('Failed to analyze image')
       }
-      
-      const data = await response.json();
-      setResults(data);
-      */
+
+      const data = await response.json()
+      console.log("Datos recibidos del backend:", data)
+      setResults(data)
     } catch (err) {
+      console.error("Error al analizar la imagen:", err)
       setError("Ocurrió un error al analizar la imagen. Por favor intenta de nuevo.")
+    } finally {
       setIsLoading(false)
     }
   }
-
   // Reset the form
   const handleReset = () => {
     setFile(null)
